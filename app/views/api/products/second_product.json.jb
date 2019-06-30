@@ -1,4 +1,5 @@
 {
+  id: @product2.id,
   name: @product2.name,
   price: @product2.price,
   image_url: @product2.image_url,
