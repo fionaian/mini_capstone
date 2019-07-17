@@ -1,6 +1,28 @@
 class Api::ProductsController < ApplicationController
+  before_action :authenticate_admin, except: [:index, :show]
+
   def index
     @products = Product.all.order(:id)
+    if params[:search]
+      @products = @products.where("name ILIKE ?", "%#{params[:search]}%")
+    end
+
+    if params[:discount]
+      @products = @products.where("price < 10")
+    end
+
+    if params[:sort] == "price" && params[:sort_order] == "asc"
+      @products = @products.order(price: :asc)
+    elsif params[:sort] == "price" && params[:sort_order] == "desc"
+      @products = @products.order(price: :desc)
+    else
+      @products = @products.order(id: :asc)
+    end
+
+    if params[:category_name]
+      @products = Category.find_by(name: params[:category_name]).products
+    end
+
     render "index.json.jb"
   end
 
@@ -9,11 +31,14 @@ class Api::ProductsController < ApplicationController
       id: params["id"],
       name: params["name"],
       price: params["price"],
-      image_url: params["image_url"],
       description: params["description"],
+      user_id: current_user.id,
     )
-    @product.save
-    render "show.json.jb"
+    if @product.save
+      render "show.json.jb"
+    else
+      render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def show
@@ -27,8 +52,11 @@ class Api::ProductsController < ApplicationController
     @product.price = params["price"] || @product.price
     @product.image_url = params["image_url"] || @product.image_url
     @product.description = params["description"] || @product.description
-    @product.save
-    render "show.json.jb"
+    if @product.save
+      render "show.json.jb"
+    else
+      render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -36,35 +64,4 @@ class Api::ProductsController < ApplicationController
     @product.destroy
     render json: { message: "Product successfully destroyed!" }
   end
-
-  # def all_products_method
-  #   @products = Product.all
-  #   render "all_products.json.jb"
-  # end
-
-  # def first_product_method
-  #   @product1 = Product.first
-  #   render "first_product.json.jb"
-  # end
-
-  # def(second_product_method)
-  #   @product2 = Product.second
-  #   render "second_product.json.jb"
-  # end
-
-  # def third_product_method
-  #   @product3 = Product.third
-  #   render "third_product.json.jb"
-  # end
-
-  # def fourth_product_method
-  #   @product4 = Product.fourth
-  #   render "fourth_product.json.jb"
-  # end
-
-  # def one_product_method
-  #   product_id = params["id"]
-  #   @product = Product.find_by(id: product_id)
-  #   render "one_product.json.jb"
-  # end
 end

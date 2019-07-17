@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>MiniCapstone</title>
+    <title>Mini-Capstone</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -10,6 +10,10 @@
   </head>
 
   <body>
+    <div>
+      <a href="/products">All Products</a>
+      <a href="/products/new">New Product</a>
+    </div>
     <%= yield %>
   </body>
 </html>
