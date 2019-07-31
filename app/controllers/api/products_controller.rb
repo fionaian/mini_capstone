@@ -33,6 +33,7 @@ class Api::ProductsController < ApplicationController
       price: params["price"],
       description: params["description"],
       user_id: current_user.id,
+      supplier_id: params["supplier_id"],
     )
     if @product.save
       render "show.json.jb"

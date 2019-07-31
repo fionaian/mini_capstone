@@ -1,0 +1,9 @@
+body {
+  font-family: Futura,"Trebuchet MS",Arial,sans-serif;
+  background-image: url('food.png')
+}
+
+.navbar-brand {
+  font-family: 'Fascinate', cursive;
+  font-size: 5em;
+} 

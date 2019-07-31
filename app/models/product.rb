@@ -1,7 +1,7 @@
 class Product < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :price, presence: true, numericality: { greater_than: 0 }
-  validates :description, presence: true, length: { in: 10..500 }
+  validates :description, presence: true, length: { in: 5..1000 }
 
   belongs_to :supplier
   has_many :images
@@ -24,5 +24,13 @@ class Product < ApplicationRecord
 
   def total
     price + tax
+  end
+
+  def image_url
+    if images.length > 0 && images[0].url
+      images[0].url
+    else
+      "https://www.hutchinsontires.com/helpers/img/no_image.jpg"
+    end
   end
 end
